@@ -1,0 +1,36 @@
+resources/views/
+├── layouts/
+│   └── app.blade.php
+├── partials/
+│   ├── nav.blade.php
+│   └── footer.blade.php
+├── components/
+│   ├── tooth-selector.blade.php
+│   └── procedure-selector.blade.php
+├── auth/
+│   ├── doctor-role-select.blade.php
+│   └── login.blade.php
+├── doctor/
+│   ├── dashboard.blade.php
+│   ├── orders/
+│   │   ├── index.blade.php
+│   │   ├── create.blade.php
+│   │   └── show.blade.php
+│   ├── finance.blade.php
+│   ├── prices.blade.php
+│   └── contact.blade.php
+├── admin/
+│   ├── users/
+│   │   ├── index.blade.php
+│   │   ├── create.blade.php
+│   │   └── edit.blade.php
+│   ├── procedures/
+│   │   ├── index.blade.php
+│   │   ├── create.blade.php
+│   │   └── edit.blade.php
+│   └── colors/
+│       ├── index.blade.php
+│       ├── create.blade.php
+│       └── edit.blade.php
+└── employee/
+    └── orders.blade.php
