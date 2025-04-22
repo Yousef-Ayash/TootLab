@@ -4,32 +4,48 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\OrderProcedureStep;
 
 class StepController extends Controller
 {
-    // GET /employee/steps
     public function index()
     {
-        $steps = Auth::user()
-            ->assignedSteps()
-            ->with('order', 'procedure', 'step')
+        // show all un‑done steps that are either unclaimed or already claimed by me
+        $steps = OrderProcedureStep::with(['order.procedures', 'procedure', 'step'])
             ->where('is_done', false)
+            ->where(function ($q) {
+                $q->whereNull('user_id')
+                    ->orWhere('user_id', auth()->id());
+            })
+            ->orderBy('created_at', 'asc')
             ->get();
 
-        return view('employee.orders.index', compact('steps'));
+        return view('employee.steps.index', compact('steps'));
     }
 
-    // POST /employee/steps/{step}/done
-    public function markDone(OrderProcedureStep $step)
+    public function update(Request $request, OrderProcedureStep $step)
     {
-        $this->authorize('update', $step);
+        // “Claim” vs. “Done”
+        if ($request->has('claim')) {
+            $step->update(['user_id' => auth()->id()]);
+        }
+        if ($request->has('done')) {
+            $step->update(['is_done' => true]);
 
-        $step->update(['is_done' => true]);
+            $order = $step->order;  // the parent Order
 
-        // Optionally advance order status or notify next user...
+            // check if *any* steps remain undone on this order
+            $anyLeft = $order
+                ->procedureSteps()
+                ->where('is_done', false)
+                ->exists();
 
-        return back()->with('success', 'Step marked as done.');
+            if (! $anyLeft) {
+                // all steps across all procedures are done → complete the order
+                $order->update(['status' => 'completed']);
+            }
+        }
+
+        return redirect()->route('employee.steps.index');
     }
 }

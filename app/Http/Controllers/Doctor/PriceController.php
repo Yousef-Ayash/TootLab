@@ -11,6 +11,6 @@ class PriceController extends Controller
     public function index()
     {
         $procedures = Procedure::with('color')->get();
-        return view('doctor.prices.index', compact('procedures'));
+        return view('doctor.prices', compact('procedures'));
     }
 }

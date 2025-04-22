@@ -13,7 +13,8 @@ class CreateOrderProcedureStepsTable extends Migration
             $table->foreignId('order_id')->constrained('orders');
             $table->foreignId('procedure_id')->constrained('procedures');
             $table->foreignId('step_id')->constrained('procedure_steps');
-            $table->foreignId('user_id')->constrained('users');
+            // $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->boolean('is_done')->default(false);
             $table->timestamps();
         });

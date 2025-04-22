@@ -69,7 +69,7 @@ class OrderController extends Controller
         $totalCost = 0;
         foreach ($data['items'] as $itemData) {
             // a) create the item
-            $orderItem = $order->items()->create([
+            $orderItem = $order->procedures()->create([
                 'tooth_number' => $itemData['tooth_number'],
                 'procedure_id' => $itemData['procedure_id'],
                 'color_id'     => $itemData['color_id'],
@@ -83,6 +83,7 @@ class OrderController extends Controller
             foreach ($orderItem->procedure->steps()->orderBy('sort_order')->get() as $step) {
                 $orderItem->steps()->create([
                     'step_id'  => $step->id,
+                    'procedure_id' => $orderItem->procedure_id,
                     'user_id'  => null,      // assignment comes later via step_users
                     'is_done'  => false,
                 ]);

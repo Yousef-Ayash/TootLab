@@ -24,4 +24,15 @@ class ProcedureStep extends Model
     {
         return $this->hasMany(OrderProcedureStep::class, 'step_id');
     }
+
+    /** Which employees can work this step */
+    public function users()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'procedure_step_user',
+            'procedure_step_id',
+            'user_id'
+        )->withTimestamps();
+    }
 }

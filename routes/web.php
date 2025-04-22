@@ -4,22 +4,23 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 // Doctor Controllers
-use App\Http\Controllers\Doctor\DashboardController as DoctorDashboard;
-use App\Http\Controllers\Doctor\OrderController     as DoctorOrder;
-use App\Http\Controllers\Doctor\FinanceController   as DoctorFinance;
-use App\Http\Controllers\Doctor\PriceController     as DoctorPrice;
-use App\Http\Controllers\Doctor\ContactController   as DoctorContact;
+use App\Http\Controllers\Doctor\DashboardController     as DoctorDashboard;
+use App\Http\Controllers\Doctor\OrderController         as DoctorOrder;
+use App\Http\Controllers\Doctor\FinanceController       as DoctorFinance;
+use App\Http\Controllers\Doctor\PriceController         as DoctorPrice;
+use App\Http\Controllers\Doctor\ContactController       as DoctorContact;
 
 // Employee Controllers
-use App\Http\Controllers\Employee\DashboardController as EmpDashboard;
-use App\Http\Controllers\Employee\StepController      as EmpStep;
+use App\Http\Controllers\Employee\DashboardController   as EmployeeDashboard;
+use App\Http\Controllers\Employee\StepController        as EmployeeStep;
+
 
 // Admin Controllers
-use App\Http\Controllers\Admin\DashboardController   as AdminDashboard;
-use App\Http\Controllers\Admin\UserController        as AdminUser;
-use App\Http\Controllers\Admin\ProcedureController   as AdminProcedure;
-use App\Http\Controllers\Admin\StepController        as AdminStep;
-use App\Http\Controllers\Admin\ColorController       as AdminColor;
+use App\Http\Controllers\Admin\DashboardController      as AdminDashboard;
+use App\Http\Controllers\Admin\UserController           as AdminUser;
+use App\Http\Controllers\Admin\ProcedureController      as AdminProcedure;
+use App\Http\Controllers\Admin\StepController           as AdminStep;
+use App\Http\Controllers\Admin\ColorController          as AdminColor;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,12 +81,13 @@ Route::middleware(['auth', 'role:employee'])
     ->name('employee.')
     ->group(function () {
 
-        // GET /employee
-        Route::get('/', [EmpDashboard::class, 'index'])
+        // // GET /employee
+        Route::get('/', [EmployeeDashboard::class, 'index'])
             ->name('dashboard');
 
-        // Steps resource: index & update (mark done)
-        Route::resource('steps', EmpStep::class)
+
+        // // Steps resource: index & update (mark done)
+        Route::resource('steps', EmployeeStep::class)
             ->only(['index', 'update']);
     });
 

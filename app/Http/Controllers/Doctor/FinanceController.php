@@ -12,13 +12,13 @@ class FinanceController extends Controller
     {
         $orders = Auth::user()
             ->orders()
-            ->withCount(['items'])
+            ->withCount(['procedures'])
             ->get();
 
         // Calculate totals
         $paid   = $orders->where('is_paid', true)->sum('final_cost');
         $owed   = $orders->where('is_paid', false)->sum('final_cost');
 
-        return view('doctor.finance.index', compact('orders', 'paid', 'owed'));
+        return view('doctor.finance', compact('orders', 'paid', 'owed'));
     }
 }

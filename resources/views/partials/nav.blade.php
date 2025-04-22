@@ -14,11 +14,12 @@
                     <a href="{{ route('doctor.prices') }}">Prices</a>
                     <a href="{{ route('doctor.contact') }}">Contact</a>
                 @elseif($role === 'admin')
+                    <a href="{{ route('admin.dashboard') }}">Dashboard</a>
                     <a href="{{ route('admin.users.index') }}">Users</a>
                     <a href="{{ route('admin.procedures.index') }}">Procedures</a>
                     <a href="{{ route('admin.colors.index') }}">Colors</a>
                 @elseif($role === 'employee')
-                    <a href="{{ route('employee.orders') }}">My Steps</a>
+                    <a href="{{ route('employee.steps.index') }}">My Steps</a>
                 @endif
                 <form action="{{ route('logout') }}" method="POST" class="inline">
                     @csrf

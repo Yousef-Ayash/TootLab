@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Models\OrderProcedureStep;
 
 class DashboardController extends Controller
 {
-    // GET /employee
     public function index()
     {
-        // Maybe redirect to steps list
-        return redirect()->route('employee.dashboard');
+        $totalSteps   = OrderProcedureStep::count();
+        $pendingSteps = OrderProcedureStep::where('is_done', false)->count();
+        $myPending    = OrderProcedureStep::where('user_id', auth()->id())
+            ->where('is_done', false)
+            ->count();
+
+        return view('employee.dashboard', compact('totalSteps', 'pendingSteps', 'myPending'));
     }
 }
