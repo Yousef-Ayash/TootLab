@@ -1,12 +1,10 @@
 @extends('layouts.app')
-
-@section('title', 'Create Color')
-
+@section('title', 'Edit Color')
 @section('content')
-    <div class="px-4 py-6">
-        <h1 class="text-2xl font-bold mb-4">Create New Color</h1>
-
-        <form method="POST" action="{{ route('admin.colors.store') }}">
+    <div class="page">
+        <h1 class="page-title">Edit Color</h1>
+        <form method="POST" action="{{ route('admin.colors.update', $color) }}">
+            @method('PUT')
             @include('admin.colors._form')
         </form>
     </div>
