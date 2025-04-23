@@ -105,13 +105,14 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
+        // dd($order);
         // Ensure the logged‑in doctor owns this order
-        abort_unless($order->doctor_id === Auth::id(), 403);
+        abort_unless($order->user_id === Auth::id(), 403);
 
         $order->load([
-            'items.procedure',
-            'items.color',
-            'items.steps.step',     // loads the ProcedureStep for each OrderItemStep
+            'procedures.procedure',
+            'procedures.color',
+            'procedures.steps.step',     // loads the ProcedureStep for each OrderItemStep
         ]);
 
         return view('doctor.orders.show', compact('order'));

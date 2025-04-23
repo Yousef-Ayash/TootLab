@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -13,7 +14,10 @@ class AuthController extends Controller
      */
     public function index()
     {
-        //
+        if (Auth::check()) {
+            return $this->redirectBasedOnRole();
+        }
+        return view('auth.role-select');
     }
 
     /**
@@ -22,42 +26,63 @@ class AuthController extends Controller
      */
     public function create(Request $request)
     {
+        if (Auth::check()) {
+            return $this->redirectBasedOnRole();
+        }
+
         $role = $request->query('role');
         if (! in_array($role, ['doctor', 'employee', 'admin'], true)) {
             return redirect('/');
         }
+
         return view('auth.login', compact('role'));
     }
 
-    /**
-     * Handle the login submission.
-     * POST /login
-     */
     public function store(Request $request)
     {
-        $credentials = $request->validate([
+        $data = $request->validate([
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
-            'role'     => ['required', 'in:doctor,employee,admin'],
+            'role'     => ['required', 'in:doctor,employee'],
         ]);
 
-        if (Auth::attempt([
-            'username' => $credentials['username'],
-            'password' => $credentials['password'],
-            'role'     => $credentials['role'],
+        // First, attempt authentication without role constraint:
+        if (! Auth::attempt([
+            'username' => $data['username'],
+            'password' => $data['password'],
         ])) {
-            $request->session()->regenerate();
-
-            return match ($credentials['role']) {
-                'doctor'   => redirect()->route('doctor.dashboard'),
-                'employee' => redirect()->route('employee.dashboard'),
-                'admin' => redirect()->route('admin.dashboard'),
-            };
+            return back()
+                ->withErrors(['login' => 'Invalid credentials'])
+                ->onlyInput('username');
         }
 
-        return back()
-            ->withErrors(['login' => 'Invalid credentials or role mismatch'])
-            ->onlyInput('username');
+        $user = Auth::user();
+
+        // Now enforce role logic:
+        if ($data['role'] === 'doctor') {
+            if ($user->role !== 'doctor') {
+                Auth::logout();
+                return back()
+                    ->withErrors(['login' => 'You must log in as a doctor here.'])
+                    ->onlyInput('username');
+            }
+            $redirect = route('doctor.dashboard');
+        } else {
+            // role === 'employee' login page; allow both employee AND admin
+            if (! in_array($user->role, ['employee', 'admin'], true)) {
+                Auth::logout();
+                return back()
+                    ->withErrors(['login' => 'You must log in as an employee or admin here.'])
+                    ->onlyInput('username');
+            }
+            // if admin, send to admin dashboard; if employee, to employee dashboard
+            $redirect = $user->role === 'admin'
+                ? route('admin.dashboard')
+                : route('employee.dashboard');
+        }
+
+        $request->session()->regenerate();
+        return redirect()->intended($redirect);
     }
 
     /**
@@ -71,5 +96,17 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    protected function redirectBasedOnRole()
+    {
+        $user = Auth::user();
+
+        return match ($user->role) {
+            'doctor'   => redirect()->route('doctor.dashboard'),
+            'admin'    => redirect()->route('admin.dashboard'),
+            'employee' => redirect()->route('employee.dashboard'),
+            default    => redirect()->route('login'),
+        };
     }
 }

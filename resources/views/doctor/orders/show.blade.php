@@ -21,18 +21,18 @@
 
             <h2 class="text-lg font-semibold mt-4">Items</h2>
             <div class="space-y-4">
-                @foreach ($order->items as $item)
+                @foreach ($order->procedures as $procedure)
                     <div class="border rounded-lg p-3">
-                        <p><span class="font-medium">Tooth:</span> {{ $item->tooth_number }}</p>
-                        <p><span class="font-medium">Procedure:</span> {{ $item->procedure->name }}</p>
-                        <p><span class="font-medium">Color:</span> {{ $item->color->name }}</p>
-                        @if ($item->notes)
-                            <p><span class="font-medium">Notes:</span> {{ $item->notes }}</p>
+                        <p><span class="font-medium">Tooth:</span> {{ $procedure->tooth_number }}</p>
+                        <p><span class="font-medium">Procedure:</span> {{ $procedure->procedure->name }}</p>
+                        <p><span class="font-medium">Color:</span> {{ $procedure->color->name }}</p>
+                        @if ($procedure->notes)
+                            <p><span class="font-medium">Notes:</span> {{ $procedure->notes }}</p>
                         @endif
 
                         <h3 class="font-semibold mt-2">Steps</h3>
                         <ol class="list-decimal list-inside text-sm">
-                            @foreach ($item->steps as $step)
+                            @foreach ($procedure->steps as $step)
                                 <li>
                                     {{ $step->step->name }} —
                                     @if ($step->is_done)

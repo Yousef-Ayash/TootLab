@@ -10,12 +10,13 @@ class ContactController extends Controller
     public function index()
     {
         // You could load this from a config or DB
-        $social = [
-            'facebook'  => 'https://facebook.com/yourlab',
-            'instagram' => 'https://instagram.com/yourlab',
-            'website'   => 'https://yourlab.example.com',
-        ];
+        // $social = [
+        //     'facebook'  => 'https://facebook.com/yourlab',
+        //     'instagram' => 'https://instagram.com/yourlab',
+        //     'website'   => 'https://yourlab.example.com',
+        // ];
 
-        return view('doctor.contact', compact('social'));
+        // return view('doctor.contact', compact('social'));
+        return view('doctor.contact');
     }
 }

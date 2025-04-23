@@ -1,7 +1,6 @@
 @csrf
 
-{{-- Core Order Fields --}}
-<div class="mb-4">
+{{-- <div class="mb-4">
     <label class="block font-medium">Order Number</label>
     <input type="text" name="order_number" value="{{ old('order_number', $order->order_number ?? '') }}"
         class="input w-full" required>
@@ -106,4 +105,77 @@
     <button type="submit" class="btn-primary">
         {{ isset($order) ? 'Update Order' : 'Create Order' }}
     </button>
+</div> --}}
+
+
+<div class="container">
+    <!-- Top fields -->
+    <div class="row">
+        <div class="field">
+            <label for="center_name">اسم المركز</label>
+            <input class="input-field" name="center_name" id="center_name" type="text" placeholder="مثال: مركز الشفاء"
+                value="{{ old('center_name', $order->center_name ?? '') }}" />
+        </div>
+        @error('center_name')
+            {{ $message }}
+        @enderror
+        <div class="field">
+            <label for="order_number">رقم الطلب</label>
+            <input class="input-field" name="order_number" id="order_number" type="number" placeholder="مثال: 12345"
+                value="{{ old('order_number', $order->order_number ?? '') }}" />
+        </div>
+        @error('order_number')
+            {{ $message }}
+        @enderror
+    </div>
+    <div class="row">
+        <div class="field">
+            <label for="patient_name">اسم المريض</label>
+            <input class="input-field" name="patient_name" id="patient_name" type="text" placeholder="مثال: أحمد علي"
+                value="{{ old('patient_name', $order->patient_name ?? '') }}" />
+        </div>
+        @error('patient_name')
+            {{ $message }}
+        @enderror
+        <div class="field">
+            <label for="doctor_name">اسم الطبيب</label>
+            <input class="input-field" name="doctor_name" id="doctor_name" type="text" placeholder="مثال: د. محمد" />
+        </div>
+    </div>
+
+    {{-- <ul class="teeth-list">
+        <li>11~48</li>
+    </ul> --}}
+    @php
+        $old = old('procedures', []);
+        $procedures = count($old) ? $old : [['tooth_number' => '', 'procedure_id' => '', 'color_id' => '']];
+    @endphp
+    @foreach ($procedures as $i => $procedure)
+        <div class="bottom-row">
+            {{-- <div class="field full">
+                <label>ملاحظات</label>
+                <input class="input-field" type="text" placeholder="أضف أي ملاحظات هنا" />
+            </div> --}}
+            <div class="field full">
+                <label>اللون</label>
+                {{-- <input class="input-field" type="text" placeholder="مثال: A2" /> --}}
+                <select name="procedures[{{ $i }}][color_id]" class="input-field" required>
+                    <option value="">اختر اللون</option>
+                    @foreach ($colors as $col)
+                        <option value="{{ $col->id }}" @selected((string) $procedure['color_id'] === (string) $col->id)>
+                            {{ $col->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @error("procedures.{$i}.color_id")
+                {{ $message }}
+            @enderror
+        </div>
+    @endforeach
+
+    <div class="buttons">
+        <button type="submit" id="send">إرسال الطلب</button>
+        <a href={{ route('doctor.dashboard') }} id="cancel">إلغاء الطلب</a>
+    </div>
 </div>

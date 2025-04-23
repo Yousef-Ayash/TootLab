@@ -24,21 +24,22 @@ class UserController extends Controller
     // POST /admin/users
     public function store(Request $request)
     {
+        // dd($request->all());
+
         $data = $request->validate([
-            'name'     => ['required', 'string'],
             'username' => ['required', 'string', 'unique:users'],
-            'password' => ['required', 'string', 'confirmed'],
+            'password' => ['required', 'string'],
             'role'     => ['required', 'in:doctor,employee'],
         ]);
 
+
         User::create([
-            'name'     => $data['name'],
             'username' => $data['username'],
             'password' => bcrypt($data['password']),
             'role'     => $data['role'],
         ]);
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('admin.dashboard')
             ->with('success', 'User created');
     }
 
@@ -52,14 +53,12 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
-            'name'     => ['required', 'string'],
             'username' => ['required', 'string', 'unique:users,username,' . $user->id],
-            'password' => ['nullable', 'string', 'confirmed'],
+            'password' => ['nullable', 'string'],
             'role'     => ['required', 'in:doctor,employee'],
         ]);
 
         $user->update([
-            'name'     => $data['name'],
             'username' => $data['username'],
             'role'     => $data['role'],
             'password' => $data['password'] ? bcrypt($data['password']) : $user->password,
